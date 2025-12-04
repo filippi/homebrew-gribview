@@ -7,7 +7,7 @@ class Gribview < Formula
 
   bottle do
     root_url "https://github.com/filippi/gribview/releases/download/v1.1"
-    sha256 cellar: :any, arm64_sequoia: "1ee0499d5a0daae583ac5b89492940964eed90d421544b3d4ada4a5f86b43636"
+    sha256 cellar: :any, arm64_sequoia: "b422084d449015ab6edaee262a56a19db36a6c4750f50614b9154dcae3e963ab"
   end
 
   depends_on "cmake" => :build
