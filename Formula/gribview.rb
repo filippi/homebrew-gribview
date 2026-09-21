@@ -1,30 +1,28 @@
 class Gribview < Formula
-  desc "Lightweight GRIB data file visualiser/filter/time series extraction"
+  desc "Desktop GRIB weather-data viewer"
   homepage "https://github.com/filippi/gribview"
-  url "https://github.com/filippi/gribview/releases/download/v1.1/gribview-1.1.tar.gz"
-  sha256 "1ee0499d5a0daae583ac5b89492940964eed90d421544b3d4ada4a5f86b43636"
+  url "https://github.com/filippi/gribview/releases/download/v1.4.0/gribview-1.4.0.tar.gz"
+  sha256 "2ad045f3b0a103c2c854efc8111c0e79cae9eaa81deec58a7e5018897d24e033"
   license "Apache-2.0"
-
-  bottle do
-    root_url "https://github.com/filippi/gribview/releases/download/v1.1"
-    sha256 cellar: :any, arm64_sequoia: "b422084d449015ab6edaee262a56a19db36a6c4750f50614b9154dcae3e963ab"
-  end
-
   depends_on "cmake" => :build
-  depends_on "pkg-config" => :build
+  depends_on "pkgconf" => :build
   depends_on "eccodes"
   depends_on "glew"
   depends_on "sdl2"
+  depends_on "libpng"
+  on_macos do
+    depends_on arch: :arm64
+  end
 
   def install
-    system "cmake", "-S", ".", "-B", "build",
-           "-DCMAKE_BUILD_TYPE=Release",
-           "-DCMAKE_INSTALL_PREFIX=#{prefix}"
+    system "cmake", "-S", ".", "-B", "build", *std_cmake_args
     system "cmake", "--build", "build"
+    system "ctest", "--test-dir", "build", "--output-on-failure"
     system "cmake", "--install", "build"
   end
 
   test do
-    assert_predicate bin/"gribview", :exist?
+    assert_match "gribview #{version}", shell_output("#{bin}/gribview --version")
+    assert_match "messages=2", shell_output("#{bin}/gribview --check #{pkgshare}/sample.grib")
   end
 end
